@@ -5,28 +5,23 @@ import { TOrder } from '@utils-types';
 
 interface IFeedState {
   feeds: TOrder[];
+  orderModalData: TOrder[];
   total: number;
   totalToday: number;
   isLoading: boolean;
   error: string | null | undefined;
 }
 
-export const getFeeds = createAsyncThunk(
-  'feeds',
-  async () => await getFeedsApi()
-);
+export const getFeeds = createAsyncThunk('feeds', getFeedsApi);
 
 export const getOrderByNumber = createAsyncThunk(
   'orderNumber',
-  async (number: number) => {
-    const res = await getOrderByNumberApi(number);
-
-    return res;
-  }
+  getOrderByNumberApi
 );
 
 const initialState: IFeedState = {
   feeds: [],
+  orderModalData: [],
   total: 0,
   totalToday: 0,
   isLoading: false,
@@ -56,31 +51,25 @@ export const feedSlice = createSlice({
         state.error = null;
       })
       // Get order by number
-      .addCase(getOrderByNumber.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(getOrderByNumber.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       })
       .addCase(getOrderByNumber.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.feeds = action.payload.orders;
+        state.orderModalData = action.payload.orders;
         state.error = null;
       });
   },
   selectors: {
+    getFeedsSelector: (state) => state,
     getLoadingFeedsSelector: (state) => state.isLoading,
-    getFeedsSelector: (state) => state.feeds,
-    getTotalSelector: (state) => state.total,
-    getTotalTodaySelector: (state) => state.totalToday
+    getOrderModalDataSelector: (state) => state.orderModalData[0]
   }
 });
 
 export const {
   getFeedsSelector,
-  getTotalSelector,
-  getTotalTodaySelector,
-  getLoadingFeedsSelector
+  getLoadingFeedsSelector,
+  getOrderModalDataSelector
 } = feedSlice.selectors;

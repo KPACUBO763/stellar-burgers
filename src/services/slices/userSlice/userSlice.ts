@@ -4,7 +4,6 @@ import { TUser } from '@utils-types';
 import { setCookie, deleteCookie } from '../../../utils/cookie';
 import {
   registerUserApi,
-  TRegisterData,
   loginUserApi,
   TLoginData,
   getUserApi,
@@ -19,10 +18,7 @@ interface IUserState {
   error: string | undefined | null;
 }
 
-export const registerUser = createAsyncThunk(
-  '/register',
-  async (data: TRegisterData) => await registerUserApi(data)
-);
+export const registerUser = createAsyncThunk('/register', registerUserApi);
 
 export const loginUser = createAsyncThunk(
   '/login',
@@ -35,21 +31,11 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const getUser = createAsyncThunk(
-  'getUser',
-  async () => await getUserApi()
-);
+export const getUser = createAsyncThunk('getUser', getUserApi);
 
-export const updateUser = createAsyncThunk(
-  'updateUser',
-  async (data: Partial<TRegisterData>) => await updateUserApi(data)
-);
+export const updateUser = createAsyncThunk('updateUser', updateUserApi);
 
-export const logout = createAsyncThunk('logout', async () => {
-  await logoutApi();
-  deleteCookie('accessToken');
-  localStorage.removeItem('refreshToken');
-});
+export const logout = createAsyncThunk('logout', logoutApi);
 
 const initialState: IUserState = {
   user: null,
@@ -117,6 +103,8 @@ export const userSlice = createSlice({
         state.user = null;
         state.isAuthorized = false;
         state.error = null;
+        deleteCookie('accessToken');
+        localStorage.removeItem('refreshToken');
       });
   },
   selectors: {

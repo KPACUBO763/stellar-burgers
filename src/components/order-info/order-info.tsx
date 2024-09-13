@@ -1,13 +1,13 @@
-import { FC, useMemo, useEffect } from 'react';
+import { FC, useMemo, useEffect, useState } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient } from '@utils-types';
+import { TIngredient, TOrder } from '@utils-types';
 import { useDispatch, useSelector } from '../../services/store';
 import { useParams } from 'react-router-dom';
 import {
   getIngredientsSelector,
   getOrderByNumber,
-  getProfileOrdersSelector
+  getOrderModalDataSelector
 } from '@slices';
 
 export const OrderInfo: FC = () => {
@@ -15,11 +15,21 @@ export const OrderInfo: FC = () => {
   const params = useParams();
   const id = Number(params.number);
   const ingredients: TIngredient[] = useSelector(getIngredientsSelector);
-  const [orderData] = useSelector(getProfileOrdersSelector);
+  const data = useSelector((state) => state.order.profileOrders);
+  const [orderData, setOrderData] = useState<TOrder | null>(null);
+  const dataModal: TOrder = useSelector(getOrderModalDataSelector);
 
   useEffect(() => {
-    dispatch(getOrderByNumber(id));
-  });
+    if (id) {
+      const order: TOrder | undefined = data.find((o) => o.number === id);
+      if (order) {
+        setOrderData(order);
+      } else {
+        dispatch(getOrderByNumber(id));
+        setOrderData(dataModal);
+      }
+    }
+  }, [dispatch, dataModal, id]);
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;

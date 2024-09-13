@@ -9,10 +9,10 @@ interface IIngredientsState {
   error: string | undefined | null;
 }
 
-export const getIngredients = createAsyncThunk('ingredients', async () => {
-  const res = await getIngredientsApi();
-  return res;
-});
+export const getIngredients = createAsyncThunk(
+  'ingredients',
+  getIngredientsApi
+);
 
 const initialState: IIngredientsState = {
   ingredients: [],

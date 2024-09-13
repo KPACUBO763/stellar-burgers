@@ -20,7 +20,7 @@ import {
   ProtectedRoute
 } from '@components';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch } from '../../services/store';
 import { getUser, getIngredients } from '@slices';
 
 const App = () => {

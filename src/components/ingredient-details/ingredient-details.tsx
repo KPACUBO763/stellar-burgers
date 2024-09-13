@@ -12,7 +12,7 @@ export const IngredientDetails: FC = () => {
   const ingredients = useSelector(getIngredientsSelector);
   const params = useParams();
   const ingredientData = ingredients.find(
-    (ingredient) => ingredient._id === params.id!
+    (ingredient) => ingredient._id === params.id || null
   );
   const isLoading = useSelector(getIsLoadingIngredientsSelector);
 

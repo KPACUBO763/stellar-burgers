@@ -10,10 +10,7 @@ interface IOrderState {
   error: string | undefined | null;
 }
 
-export const getOrders = createAsyncThunk(
-  'orders',
-  async () => await getOrdersApi()
-);
+export const getOrders = createAsyncThunk('orders', getOrdersApi);
 
 const initialState: IOrderState = {
   name: null,
@@ -28,10 +25,6 @@ export const orderSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getOrders.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(getOrders.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;

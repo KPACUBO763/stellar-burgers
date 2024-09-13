@@ -28,10 +28,7 @@ const initialState: IConstructorState = {
   error: null
 };
 
-export const orderBurger = createAsyncThunk(
-  'orderBurger',
-  (ingredients: string[]) => orderBurgerApi(ingredients)
-);
+export const orderBurger = createAsyncThunk('orderBurger', orderBurgerApi);
 
 export const constructorSlice = createSlice({
   name: CONSTRUCTOR_SLICE_NAME,
@@ -41,13 +38,13 @@ export const constructorSlice = createSlice({
       reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
         if (action.payload.type === 'bun') {
           state.constructorItems.bun = action.payload;
-          return;
+        } else {
+          state.constructorItems.ingredients.push(action.payload);
         }
-        state.constructorItems.ingredients.push(action.payload);
       },
       prepare: (ingredient: TIngredient) => {
-        const item_id = nanoid();
-        return { payload: { ...ingredient, id: item_id } };
+        const id = nanoid();
+        return { payload: { ...ingredient, id } };
       }
     },
     removeIngredient: (
@@ -56,15 +53,18 @@ export const constructorSlice = createSlice({
     ) => {
       state.constructorItems.ingredients =
         state.constructorItems.ingredients.filter(
-          (item) => item._id !== action.payload._id
+          (item) => item.id !== action.payload.id
         );
+    },
+    resetModalData: (state) => {
+      state.orderModalData = null;
     },
     moveDownIngredient: (
       state,
       action: PayloadAction<TConstructorIngredient>
     ) => {
       const currentIndex = state.constructorItems.ingredients.findIndex(
-        (item) => item._id === action.payload._id
+        (item) => item.id === action.payload.id
       );
       if (currentIndex < state.constructorItems.ingredients.length - 1) {
         state.constructorItems.ingredients[currentIndex] =
@@ -77,7 +77,7 @@ export const constructorSlice = createSlice({
       action: PayloadAction<TConstructorIngredient>
     ) => {
       const currentIndex = state.constructorItems.ingredients.findIndex(
-        (item) => item._id === action.payload._id
+        (item) => item.id === action.payload.id
       );
       if (currentIndex > 0) {
         state.constructorItems.ingredients[currentIndex] =
@@ -87,9 +87,7 @@ export const constructorSlice = createSlice({
     }
   },
   selectors: {
-    getConstructorSelector: (state) => state,
-    getConstructorItemsSelector: (state) => state.constructorItems,
-    getOrderModalDataSelector: (state) => state.orderModalData
+    getConstructorSelector: (state) => state
   },
   extraReducers: (builder) => {
     builder
@@ -114,15 +112,12 @@ export const constructorSlice = createSlice({
   }
 });
 
-export const {
-  getConstructorSelector,
-  getConstructorItemsSelector,
-  getOrderModalDataSelector
-} = constructorSlice.selectors;
+export const { getConstructorSelector } = constructorSlice.selectors;
 
 export const {
   addIngredient,
   removeIngredient,
   moveDownIngredient,
-  moveUpIngredient
+  moveUpIngredient,
+  resetModalData
 } = constructorSlice.actions;

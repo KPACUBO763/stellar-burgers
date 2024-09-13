@@ -7,7 +7,8 @@ import {
   getConstructorSelector,
   orderBurger,
   getFeeds,
-  getIsAuthorizedSelector
+  getIsAuthorizedSelector,
+  resetModalData
 } from '@slices';
 
 export const BurgerConstructor: FC = () => {
@@ -20,24 +21,22 @@ export const BurgerConstructor: FC = () => {
   const orderRequest = constructorItemsSelector.orderRequest;
   const orderModalData = constructorItemsSelector.orderModalData;
   const isAuth = useSelector(getIsAuthorizedSelector);
+  const itemsId: string[] = [
+    ...ingredients.map((element) => element._id),
+    bun?._id
+  ].filter((id): id is string => id !== undefined);
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
     if (!isAuth && bun) {
-      return navigate('/login');
+      navigate('/login');
     }
-    if (isAuth && bun) {
-      const itemsId: string[] = [
-        bun._id,
-        ...ingredients.map((item) => item._id)
-      ];
-      dispatch(orderBurger(itemsId));
-    }
+    dispatch(orderBurger(itemsId));
   };
 
   const closeOrderModal = () => {
     dispatch(getFeeds());
-    navigate('/feed');
+    dispatch(resetModalData());
   };
 
   const price = useMemo(
