@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   getConstructorSelector,
   orderBurger,
-  getFeeds,
   getIsAuthorizedSelector,
   resetModalData
 } from '@slices';
@@ -29,13 +28,12 @@ export const BurgerConstructor: FC = () => {
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
     if (!isAuth && bun) {
-      navigate('/login');
+      return navigate('/login');
     }
     dispatch(orderBurger(itemsId));
   };
 
   const closeOrderModal = () => {
-    dispatch(getFeeds());
     dispatch(resetModalData());
   };
 
