@@ -37,7 +37,6 @@ export const ingredientsSlice = createSlice({
       .addCase(getIngredients.fulfilled, (state, action) => {
         state.isLoading = false;
         state.ingredients = action.payload;
-        state.error = null;
       });
   },
   selectors: {
@@ -46,5 +45,9 @@ export const ingredientsSlice = createSlice({
   }
 });
 
+export { initialState as ingredientsInitialState };
+
 export const { getIngredientsSelector, getIsLoadingIngredientsSelector } =
   ingredientsSlice.selectors;
+
+export default ingredientsSlice.reducer;

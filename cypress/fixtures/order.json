@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "name": "testOrder",
+  "order": {
+    "_id": "testOrder",
+    "status": "cooking",
+    "name": "testOrder",
+    "createdAt": "createdAt",
+    "updatedAt": "1updatedAt",
+    "number": 1,
+    "ingredients": ["1"]
+  }
+}
