@@ -112,6 +112,8 @@ export const constructorSlice = createSlice({
   }
 });
 
+export { initialState as constructorInitialState };
+
 export const { getConstructorSelector } = constructorSlice.selectors;
 
 export const {
@@ -121,3 +123,5 @@ export const {
   moveUpIngredient,
   resetModalData
 } = constructorSlice.actions;
+
+export default constructorSlice.reducer;

@@ -14,7 +14,6 @@ import {
 interface IUserState {
   user: TUser | null;
   isAuthorized: boolean;
-  isLoading: boolean;
   error: string | undefined | null;
 }
 
@@ -40,7 +39,6 @@ export const logout = createAsyncThunk('logout', logoutApi);
 const initialState: IUserState = {
   user: null,
   isAuthorized: false,
-  isLoading: false,
   error: null
 };
 
@@ -57,21 +55,13 @@ export const userSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isAuthorized = true;
-        state.error = null;
       })
       // Register user
-      .addCase(registerUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(registerUser.rejected, (state, action) => {
-        state.isLoading = false;
         state.error = action.error.message;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.user = action.payload.user;
-        state.error = null;
       })
       // Login user
       .addCase(loginUser.rejected, (state, action) => {
@@ -80,29 +70,18 @@ export const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.isAuthorized = true;
-        state.error = null;
       })
       // Update user data
-      .addCase(updateUser.pending, (state) => {
-        state.isLoading = true;
-      })
       .addCase(updateUser.rejected, (state, action) => {
-        state.isLoading = false;
         state.error = action.error.message;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.user = action.payload.user;
-        state.error = null;
       })
       // Logout
-      .addCase(logout.rejected, (state, action) => {
-        state.error = action.error.message;
-      })
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.isAuthorized = false;
-        state.error = null;
         deleteCookie('accessToken');
         localStorage.removeItem('refreshToken');
       });
@@ -113,4 +92,8 @@ export const userSlice = createSlice({
   }
 });
 
+export { initialState as userInitialState };
+
 export const { getUserSelector, getIsAuthorizedSelector } = userSlice.selectors;
+
+export default userSlice.reducer;

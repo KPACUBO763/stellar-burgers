@@ -48,15 +48,12 @@ export const feedSlice = createSlice({
         state.feeds = action.payload.orders;
         state.total = action.payload.total;
         state.totalToday = action.payload.totalToday;
-        state.error = null;
       })
       // Get order by number
       .addCase(getOrderByNumber.rejected, (state, action) => {
-        state.isLoading = false;
         state.error = action.error.message;
       })
       .addCase(getOrderByNumber.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.orderModalData = action.payload.orders;
         state.error = null;
       });
@@ -68,8 +65,12 @@ export const feedSlice = createSlice({
   }
 });
 
+export { initialState as feedInitialState };
+
 export const {
   getFeedsSelector,
   getLoadingFeedsSelector,
   getOrderModalDataSelector
 } = feedSlice.selectors;
+
+export default feedSlice.reducer;

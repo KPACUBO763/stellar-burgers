@@ -32,7 +32,6 @@ export const orderSlice = createSlice({
       .addCase(getOrders.fulfilled, (state, action) => {
         state.isLoading = false;
         state.profileOrders = action.payload;
-        state.error = null;
       });
   },
   selectors: {
@@ -41,5 +40,9 @@ export const orderSlice = createSlice({
   }
 });
 
+export { initialState as orderInitialState };
+
 export const { getProfileOrdersSelector, getIsLoadingOrderSelector } =
   orderSlice.selectors;
+
+export default orderSlice.reducer;
